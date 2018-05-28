@@ -194,9 +194,14 @@ Compatibility is intentionally broken in the sense that extended keys derived fo
 
 All keys below are derived from the following BIP32 seed (in hex):
 <code>0df68c16e522eea9c1d8e090cfb2139c3b3a2abed78cbcb3e20be2c29185d3b8df4e8ce4e52a1206a688aeb88bfee249585b41a7444673d1f16c0d45755fa8b9</code>
-The xprv at node <code>m/</code> is <code>xprv9s21ZrQH143K3nyWMZVjzGL4KKAE1zahmhTHuV5pdw4eK3o3igC5QywgQG7UTRe6TGBniPDpPFWzXMeMUFbBj8uYsfXGjyMmF54wdNt8QBm</code>.
+
+The xprv at node <code>m/</code> is:
+ <code>xprv9s21ZrQH143K3nyWMZVjzGL4KKAE1zahmhTHuV5pdw4eK3o3igC5QywgQG7UTRe6TGBniPDpPFWzXMeMUFbBj8uYsfXGjyMmF54wdNt8QBm</code>.
+
 The "first receiving address" is at node <code>m/0/0</code>, and the "first change address" is at <code>m/1/0</code>.
+
 The public key at <code>m/0/0</code> is <code>033a05ec7ae9a9833b0696eb285a762f17379fa208b3dc28df1c501cf84fe415d0</code>.
+
 The public key at <code>m/1/0</code> is <code>02bf27f41683d84183e4e930e66d64fc8af5508b4b5bf3c473c505e4dbddaeed80</code>.
 
 <pre>
