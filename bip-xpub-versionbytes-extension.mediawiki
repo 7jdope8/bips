@@ -20,13 +20,16 @@
 
 Among other changes, the activation of SegWit ([[bip-0141.mediawiki|BIP141]]) introduced new output script templates usable on Bitcoin mainnet. This poses a new problem for HD wallets in terms of what type of scripts they should derive from master keys. Previously most wallets offered deriving either P2PKH or multi-signature embedded in [[bip-0016.mediawiki|BIP16]] P2SH outputs, and it was usually deduced from context which of the two should be used. We believe it would be better to have this knowledge explicitly.
 
-Encoding the script type in [[bip-0032.mediawiki|BIP32]] extended keys is beneficial for wallets. For example, a watch-only wallet constructed from an extended public key would otherwise have to either (1) derive all possible scripts for the key<ref>Which is not even possible, given there are an effectively infinite number of possible scripts. A wallet could however derive scripts for all standard templates.</ref>, or (2) prompt the user to enter the script type in a side-channel.
+Encoding the script type in [[bip-0032.mediawiki|BIP32]] extended keys is beneficial for wallets. For example, a watch-only wallet constructed from an extended public key would otherwise have to either (1) derive all possible scripts for the key, or (2) prompt the user to enter the script type in a side-channel.
 
 Deriving all possible scripts (1)
 
+* Can only realistically derive common templates.
 * Potentially wastes resources. Wallets have to monitor more output scripts for incoming transactions.
 * Introduces key-reuse. Public keys are reused for each script type.
 * Becomes an ever-growing barrier for developers of new wallet software to implement detecting and spending from every type of UTXO. Otherwise if they choose not to implement legacy script types that can lead to not discovering funds.
+
+Note that deriving all common template scripts (p2pkh, p2wpkh-embedded-in-p2sh, p2wpkh) is what Bitcoin Core 0.16 does when importing a WIF private key.
 
 Prompting the user to enter the script type (2) as additional information besides the extended public key just leads to more complex user interfaces and suboptimal experience.
 
@@ -281,10 +284,6 @@ The public key at <code>m/1/0</code> is <code>02bf27f41683d84183e4e930e66d64fc8a
   first_receiving_addr = tb1q84x0yrztvcjg88qef4d6978zccxulcmc9y88xcg4ghjdau999x7qf2696k
   first_change_addr = tb1q0fj5mra96hhnum80kllklc52zqn6kppt3hyzr49yhr3ecr42z3ts5777jl
 </pre>
-
-== Footnotes ==
-
-<references />
 
 ==Reference==
 
