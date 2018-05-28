@@ -8,7 +8,7 @@
   Comments-URI: https://github.com/bitcoin/bips/wiki/Comments:BIP-XXXX
   Status: Draft
   Type: Informational
-  Created: 2018-03-XX
+  Created: 2018-05-28
   License: PD
 </pre>
 
@@ -20,7 +20,7 @@
 
 Among other changes, the activation of SegWit ([[bip-0141.mediawiki|BIP141]]) introduced new output script templates usable on Bitcoin mainnet. This poses a new problem for HD wallets in terms of what type of scripts they should derive from master keys. Previously most wallets offered deriving either P2PKH or multi-signature embedded in [[bip-0016.mediawiki|BIP16]] P2SH outputs, and it was usually deduced from context which of the two should be used. We believe it would be better to have this knowledge explicitly.
 
-Encoding the script type in [[bip-0032.mediawiki|BIP32]] extended keys is beneficial for wallets. For example, a watch-only wallet constructed from an extended public key would otherwise have to either (1) derive all possible scripts in the subtree<ref>Which is not even possible, given there are an effectively infinite number of possible scripts. A wallet could however derive scripts for all standard templates.</ref>, or (2) prompt the user to enter the script type in a side-channel.
+Encoding the script type in [[bip-0032.mediawiki|BIP32]] extended keys is beneficial for wallets. For example, a watch-only wallet constructed from an extended public key would otherwise have to either (1) derive all possible scripts for the key<ref>Which is not even possible, given there are an effectively infinite number of possible scripts. A wallet could however derive scripts for all standard templates.</ref>, or (2) prompt the user to enter the script type in a side-channel.
 
 Deriving all possible scripts (1)
 
@@ -30,7 +30,7 @@ Deriving all possible scripts (1)
 
 Prompting the user to enter the script type (2) as additional information besides the extended public key just leads to more complex user interfaces and suboptimal experience.
 
-Users directly interact with master public keys, for watch-only wallets, or when specifying cosigners for HD multisig. These keys are commonly serialized as [[bip-0032.mediawiki|BIP32]] extended keys, hence it makes sense to make the encoding of the script type user-visible. As version bytes are already used to encode the network in such a way, this document introduces new constants for version bytes to further encode the script type.
+Users directly interact with master public keys, for watch-only wallets, or when specifying cosigners for HD multisig. These keys are commonly serialized as [[bip-0032.mediawiki|BIP32]] extended keys, hence it makes sense to make the encoding of the script type user-visible. Version bytes are already used to encode the network. This document introduces new constants for version bytes to also encode the script type.
 
 
 ===Considerations===
@@ -192,8 +192,89 @@ Compatibility is intentionally broken in the sense that extended keys derived fo
 
 ==Test vectors==
 
+All keys below are derived from the following BIP32 seed (in hex):
+<code>0df68c16e522eea9c1d8e090cfb2139c3b3a2abed78cbcb3e20be2c29185d3b8df4e8ce4e52a1206a688aeb88bfee249585b41a7444673d1f16c0d45755fa8b9</code>
+The xprv at node <code>m/</code> is <code>xprv9s21ZrQH143K3nyWMZVjzGL4KKAE1zahmhTHuV5pdw4eK3o3igC5QywgQG7UTRe6TGBniPDpPFWzXMeMUFbBj8uYsfXGjyMmF54wdNt8QBm</code>.
+The "first receiving address" is at node <code>m/0/0</code>, and the "first change address" is at <code>m/1/0</code>.
+The public key at <code>m/0/0</code> is <code>033a05ec7ae9a9833b0696eb285a762f17379fa208b3dc28df1c501cf84fe415d0</code>.
+The public key at <code>m/1/0</code> is <code>02bf27f41683d84183e4e930e66d64fc8af5508b4b5bf3c473c505e4dbddaeed80</code>.
+
 <pre>
-  ...
+  ## mainnet
+
+  # p2pkh mainnet
+  master_privkey = xprv9s21ZrQH143K3nyWMZVjzGL4KKAE1zahmhTHuV5pdw4eK3o3igC5QywgQG7UTRe6TGBniPDpPFWzXMeMUFbBj8uYsfXGjyMmF54wdNt8QBm
+  master_pubkey = xpub661MyMwAqRbcGH3yTb2kMQGnsLziRTJZ8vNthsVSCGbdBr8CGDWKxnGAFYgyKTzBtwvPPmfVAWJuFmxRXjSbUTg87wDkWQ5GmzpfUcN9t8Z
+  first_receiving_addr = 19fWEVaXqgJFFn7JYNr6ouxyjZy3uK7CdK
+  first_change_addr = 1EEX7da31qndYyeKdbM665w1ze5gbkkAZZ
+
+  # p2wpkh-p2sh mainnet
+  master_privkey = yprvABrGsX5C9janu6AdBvHNCMRZVHJfxcaCgoyWgsyi1wSXN9cGyLMe33bpRU54TLJ1ruJbTrpNqusYQeFvBx1CXNb9k1DhKtBFWo8b1sLbXhN
+  master_pubkey = ypub6QqdH2c5z7967aF6HwpNZVNJ3K9AN5J442u7VGPKaGyWEwwRWsftaqvJGkeZKNe7Jb3C9FG3dAfT94ZzFRrcGhMizGvB6Jtm3itJsEFhxMC
+  first_receiving_addr = 34SAT5gGF5UaBhhSZ8qEuuxYvZ2cm7Zi23
+  first_change_addr = 38unULZaetSGSKvDx7Krukh8zm8NQnxGiA
+
+  # p2wpkh mainnet
+  master_privkey = zprvAWgYBBk7JR8GkPMk2H4zQSX4fFT7uEZhbvVjUGsbPwpQRFRWDzXCf7FxSg2eTEwwGYRQDLQwJaE6HvsUueRDKcGkcLv7unzjnXCEQVWhrF9
+  master_pubkey = zpub6jftahH18ngZxsSD8JbzmaToDHHcJhHYy9RLGfHCxHMPJ3kemXqTCuaSHxc9KHJ2iE9ztirc5q212MBYy8Gd4w3KrccbgDiFKSwxFpYKEH6
+  first_receiving_addr = bc1qtuynwzd0d6wptvyqmc6ehkm70zcamxpshyzu5e
+  first_change_addr = bc1qjy5zunxh6hjysele86qqywfa437z4xwmleq8wk
+
+  # p2sh multisig 1-of-1 mainnet
+  master_privkey = xprv9s21ZrQH143K3nyWMZVjzGL4KKAE1zahmhTHuV5pdw4eK3o3igC5QywgQG7UTRe6TGBniPDpPFWzXMeMUFbBj8uYsfXGjyMmF54wdNt8QBm
+  master_pubkey = xpub661MyMwAqRbcGH3yTb2kMQGnsLziRTJZ8vNthsVSCGbdBr8CGDWKxnGAFYgyKTzBtwvPPmfVAWJuFmxRXjSbUTg87wDkWQ5GmzpfUcN9t8Z
+  first_receiving_addr = 3F4nm8Vunb7mxVvqhUP238PYge2hpU5qYv
+  first_change_addr = 3N8jvKGmxzVHENn6B4zTdZt3N9bmRKjj96
+
+  # p2wsh-p2sh multisig 1-of-1 mainnet
+  master_privkey = YprvANkMzkodih9AKfL18akM2RmND5LwAyFo15dBc9FFPiGvzLBBjjjv8ATkEB2Y1mWv6NNaLSpVj8G3XosgVBA9frhpaUL6jHeFQXQTbqVPcv2
+  master_pubkey = Ypub6bjiQGLXZ4hTY9QUEcHMPZi6m7BRaRyeNJYnQXerx3ous8WLHH4AfxnE5Tc2sos1Y47B1qGAWP3xGEBkYf1ZRBUPpk2aViMkwTABT6qoiBb
+  first_receiving_addr = 3L1BxLLASGKE3DR1ruraWm3hZshGCKqcJx
+  first_change_addr = 3NDGcbZVXTpaQWRhiuVPpXsNt4g2JiCX4E
+
+  # p2wsh multisig 1-of-1 mainnet
+  master_privkey = ZprvAhadJRUYsNgeAxX7xwXyEWrsP3VP7bFHvC9QPY98miep3RzQzPuUkE7tFNz81gAqW1VP5vR4BncbR6VFCsaAU6PRSp2XKCTjgFU6zRpk6Xp
+  master_pubkey = Zpub6vZyhw1ShkEwPSbb4y4ybeobw5KsX3y9HR51BvYkL4BnvEKZXwDjJ2SN6fZcsiWvwhDymJriy3QW9WoKGMRaDR9zh5j15dBFDBDpqjK1ekQ
+  first_receiving_addr = bc1q84x0yrztvcjg88qef4d6978zccxulcmc9y88xcg4ghjdau999x7q7zv2qe
+  first_change_addr = bc1q0fj5mra96hhnum80kllklc52zqn6kppt3hyzr49yhr3ecr42z3tsrkg3gs
+
+  ## testnet
+
+  # p2pkh testnet
+  master_privkey = tprv8ZgxMBicQKsPecD328MF9ux3dSaSFWci7FNQmuWH7uZ86eY8i3XpvjK8KSH8To2QphiZiUqaYc6nzDC6bTw8YCB9QJjaQL5pAApN4z7vh2B
+  master_pubkey = tpubD6NzVbkrYhZ4Y5Epun1qZKcACU6NQqocgYyC4RYaYBMWw8nuLSMR7DvzVamkqxwRgrTJ1MBMhc8wwxT2vbHqMu8RBXy4BvjWMxR5EdZroxE
+  first_receiving_addr = mpBTXYfWehjW2tavFwpUdqBJbZZkup13k2
+  first_change_addr = mtkUQgf1psDtL67wMAKTv19LrdgPWy6GDQ
+
+  # p2wpkh-p2sh testnet
+  master_privkey = uprv8tXDerPXZ1QsVuQ9rV8sN13YoQitC8cD2MtdZJQAVuw19kMMxhhPYnyGLeEiThgLELqNTxS91GTLsVofKAM9LRrkGeRzzEuJRtt1Tcostr7
+  master_pubkey = upub57Wa4MvRPNyAiPUcxWfsj8zHMSZNbbL4PapEMgon4FTz2YgWWF1e6bHkBvpDKk2Rg2Zy9LsonXFFbv7jNeCZ5kdKWv8UkfcoxpdjJrZuBX6
+  first_receiving_addr = 2MuzNWpcHrXyvPVKzEGT7Xrwp8uEnXXjWnK
+  first_change_addr = 2MzTzY5VcGLwce7YmdEwjXhgQD7LYEKLJTm
+
+  # p2wpkh testnet
+  master_privkey = vprv9DMUxX4ShgxMMCbGgqvVa693yNsL8kbhwUQrLhJ3svJtCrAbDMrxArdQMrCJTcLFdyxBDS2hTvotknRE2rmA8fYM8z8Ra9inhcwerEsG6Ev
+  master_pubkey = vpub5SLqN2bLY4WeZgfjnsTVwE5nXQhpYDKZJhLT95hfSFqs5eVjkuBCiewtD8moKegM5fgmtpUNFBboVCjJ6LcZszJvPFpuLaSJEYhNhUAnrCS
+  first_receiving_addr = tb1qtuynwzd0d6wptvyqmc6ehkm70zcamxpsaze002
+  first_change_addr = tb1qjy5zunxh6hjysele86qqywfa437z4xwm4lm549
+
+  # p2sh multisig 1-of-1 testnet
+  master_privkey = tprv8ZgxMBicQKsPecD328MF9ux3dSaSFWci7FNQmuWH7uZ86eY8i3XpvjK8KSH8To2QphiZiUqaYc6nzDC6bTw8YCB9QJjaQL5pAApN4z7vh2B
+  master_pubkey = tpubD6NzVbkrYhZ4Y5Epun1qZKcACU6NQqocgYyC4RYaYBMWw8nuLSMR7DvzVamkqxwRgrTJ1MBMhc8wwxT2vbHqMu8RBXy4BvjWMxR5EdZroxE
+  first_receiving_addr = 2N6czpsRwQ3d8AHZPNbztf5NotzEsaZmVQ8
+  first_change_addr = 2NDgwz4CoaSzdSAQdrCcLFWsJaVowCNgiPA
+
+  # p2wsh-p2sh multisig 1-of-1 testnet
+  master_privkey = Uprv95RJn67y7xyEvUZXo9brC5PMXCm9QVHoLdYJUZfhsgmQmvvGj75fduqC9MCC28uETouMLYSFtUqqzfRRcPW6UuyR77YQPeNJKd9t3XutF8b
+  master_pubkey = Upub5JQfBberxLXY8xdzuB8rZDL65Ebdox1ehrTuGx5KS2JPejFRGePvBi9fzdmgtBFKuVdx1vsvfjdkj5jVfsMWEEjzMPEtA55orYubtrCZmRr
+  first_receiving_addr = 2NBZQ25GC3ipaF13ZY3UT8i2xnDuS17pJqx
+  first_change_addr = 2NDmUgLVX8vKvcJ4FQ37GSUre6QtBzKkb6k
+
+  # p2wsh multisig 1-of-1 testnet
+  master_privkey = Vprv16YtLrHXxePM6noKqtFtMtmUgBE9bEpF3fPLmpvuPksssLostujtdHBwqhEeVuzESz22UY8hyPx9ed684SQpCmUKSVhpxPFbvVNY7qnviNR
+  master_pubkey = Vpub5dEvVGKn7251zFq7jXvUmJRbFCk5ka19cxz84LyCp2gGhq4eXJZUomop1qjGt5uFK8kkmQUV8PzJcNM4PZmX2URbDiwJjyuJ8GyFHRrEmmG
+  first_receiving_addr = tb1q84x0yrztvcjg88qef4d6978zccxulcmc9y88xcg4ghjdau999x7qf2696k
+  first_change_addr = tb1q0fj5mra96hhnum80kllklc52zqn6kppt3hyzr49yhr3ecr42z3ts5777jl
 </pre>
 
 == Footnotes ==
